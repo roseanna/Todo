@@ -6,17 +6,31 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_weight=".1"
-        android:id="@+id/title"/>
+        android:gravity="center"
+        android:backgroundTint="@android:color/holo_blue_bright"
+        android:id="@+id/title"
+        android:textColor="#000000"
+        android:textSize="20dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".8"
-        android:id="@+id/showTextView"/>
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:text="TESTING"
+        android:gravity="center"
+        android:id="@+id/showTextView"
+        android:textColor="#000000"
+        android:textSize="20dp" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:id="@+id/back"
         android:text="Back"/>
 
