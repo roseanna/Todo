@@ -24,6 +24,9 @@ public class TaskAdapter extends ArrayAdapter implements Serializable {
         this.context = context;
         this.tasks = tasks;
     }
+    public ArrayList<ToDo> getTasks(){
+        return this.tasks;
+    }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater       = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -35,7 +38,7 @@ public class TaskAdapter extends ArrayAdapter implements Serializable {
         cb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(cb.isChecked())
+                if (cb.isChecked())
                     tasks.get(position).set();
                 else if (!cb.isChecked())
                     tasks.get(position).unset();

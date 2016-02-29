@@ -1,5 +1,6 @@
 package com.example.roseanna.todo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -18,16 +19,17 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, Serializable {
-    TaskAdapter todoAdapter;
-    ListView todoLV;
+public class MainActivity extends Activity implements View.OnClickListener, Serializable {
+    public TaskAdapter todoAdapter;
+    public ListView todoLV;
 
-    ArrayList<ToDo> tasks;
+    public ArrayList<ToDo> tasks;
 
-    Button addButton, delButton, clearButton, showButton, editButton;
-    EditText newTask;
+    public Button addButton, delButton, clearButton, showButton, editButton;
+    public EditText newTask;
 
-    String filename;
+    public String filename;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 editClick();
                 break;
         }
+        clearSelect();
     }
 
     public void editClick(){
@@ -88,7 +91,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         showActivity.putExtras(myBundle);
         startActivityForResult(showActivity, 200);
     }
-
+    public void clearSelect(){
+        for(ToDo i: tasks){
+            i.unset();
+        }
+    }
     public void showClick() {
         ArrayList<ToDo> clicked = new ArrayList<ToDo>();
         for(ToDo t : tasks){
@@ -101,21 +108,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
 
-        ToDo t = clicked.get(0);
+        ToDo t              = clicked.get(0);
         Intent showActivity = new Intent(MainActivity.this, ShowActivity.class);
-        Bundle myBundle = new Bundle();
+        Bundle myBundle     = new Bundle();
         myBundle.putString("title", t.getTitle());
         myBundle.putString("description", t.getDescription());
 
         showActivity.putExtras(myBundle);
         startActivityForResult(showActivity, 100);
     }
-
     public void clearClick() {
         tasks.clear();
         todoAdapter.notifyDataSetChanged();
     }
-
     public void deleteClick() {
         Log.i("DELETE TASK", tasks.toString());
         ArrayList<ToDo> rem = new ArrayList<ToDo>();
@@ -130,19 +135,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         todoAdapter.notifyDataSetChanged();
     }
-
     public void addClick() {
         Log.i("ADD TASK", tasks.toString());
         String input = newTask.getText().toString();
-
         if (!input.isEmpty()) {
-            tasks.add(new ToDo(input, ""));
+            tasks.add(new ToDo(input, " "));
             newTask.setText("");
             todoAdapter.notifyDataSetChanged();
         } else {
             Toast.makeText(MainActivity.this, "Add a task!", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     @Override
     public void onStart() {
@@ -163,13 +167,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editButton.setOnClickListener(this);
         showButton.setOnClickListener(this);
     }
-
     @Override
     public void onStop() {
         super.onStop();
         save(this, filename, tasks);
     }
-
     public static void save(Context context, String fileName, Object obj) {
         try {
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -181,9 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Log.e("A", "EXCEPTION: " + e.getMessage());
         }
     }
-
     public static Object load(Context context, String filename) {
-
         try {
             FileInputStream fis = context.openFileInput(filename);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -204,24 +204,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Log.i("HERE FROM SHOW", "!");
             }
             else if(requestCode == 200){
-                Bundle edited = data.getExtras();
-                String oldTitle = edited.getString("oldTitle");
-                String newTitle = edited.getString("newTitle");
-                String newDesc = edited.getString("newDesc");
-                Log.i(newTitle, newDesc);
-                tasks.add(new ToDo(newTitle, newDesc));
-                for (ToDo i: tasks){
-                    Log.i(i.getTitle(),String.valueOf(i.isSelected()));
-                    if (i.getTitle().equals(oldTitle)){
-                        i.setTitle(newTitle);
-                        i.setDescription(newDesc);
-                    }
-                }
-                todoAdapter = new TaskAdapter(this, tasks);
+//                Bundle dataBundle   = data.getExtras();
+//                String newTitle     = dataBundle.getString("newTitle");
+                ToDo newTodo        = new ToDo("PLEASE WORK", "nn");
+                Log.i("get", String.valueOf(todoAdapter.getTasks().size()));
+                tasks.clear();
+                Log.i("get", String.valueOf(todoAdapter.getTasks().size()));
+                todoAdapter.notifyDataSetChanged();
+
             }
         } catch (Exception e) {
-            Log.i("ERROR", "ERROR");
+            Log.i("ERROR", String.valueOf(requestCode));
         }
-
     }
 }
