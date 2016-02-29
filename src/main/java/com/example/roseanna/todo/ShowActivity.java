@@ -34,8 +34,8 @@ public class ShowActivity extends AppCompatActivity implements View.OnClickListe
         myBundle = myIntent.getExtras();
         String x = myBundle.getString("title");
         String y = myBundle.getString("description");
-        if(y.length() == 0)
-            y = "No description currently. Go back and press edit to change!";
+        if (y.equals(" ") || y.length() < 1)
+            y = "No desc";
         Log.i(x, y);
         title.setText(x);
         desc.setText(y);

@@ -23,13 +23,16 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
     public TaskAdapter todoAdapter;
     public ListView todoLV;
 
-    public ArrayList<ToDo> tasks;
+    public ArrayList<ToDo> tasks = new ArrayList<>();
 
     public Button addButton, delButton, clearButton, showButton, editButton;
+
     public EditText newTask;
-
     public String filename;
-
+    public boolean returned = false;
+    public String newTitle;
+    public int oldPosition;
+    public String newDesc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,19 +75,23 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
     }
 
     public void editClick(){
+        oldPosition = 0;
         ArrayList<ToDo> clicked = new ArrayList<ToDo>();
-        for(ToDo t : tasks){
-            if(t.isSelected()){
-                clicked.add(t);
+        for (int i = 0; i < tasks.size(); i++){
+            if(tasks.get(i).isSelected()){
+                oldPosition = i;
+                Log.i("OLD POS", String.valueOf(oldPosition));
+                clicked.add(tasks.get(i));
             }
         }
         if (clicked.size() != 1) {
             Toast.makeText(MainActivity.this, "CHOOSE EXACTLY ONE TASK!", Toast.LENGTH_SHORT).show();
+            oldPosition = 0;
             return;
         }
         ToDo toEdit = clicked.get(0);
         Intent showActivity = new Intent(MainActivity.this, EditActivity.class);
-        Bundle myBundle = new Bundle();
+        Bundle myBundle     = new Bundle();
         myBundle.putString("title", toEdit.getTitle());
         myBundle.putString("description", toEdit.getDescription());
 
@@ -197,6 +204,19 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
         }
     }
 
+    public void onResume(){
+        super.onResume();
+        if (returned){
+            returned = false;
+            Log.i("onREsume", String.valueOf(oldPosition));
+            ToDo temp = tasks.get(oldPosition);
+            temp.setDescription(newDesc);
+            temp.setTitle(newTitle);
+            todoAdapter.notifyDataSetChanged();
+            Toast.makeText(this, "Updated", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
@@ -204,14 +224,10 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
                 Log.i("HERE FROM SHOW", "!");
             }
             else if(requestCode == 200){
-//                Bundle dataBundle   = data.getExtras();
-//                String newTitle     = dataBundle.getString("newTitle");
-                ToDo newTodo        = new ToDo("PLEASE WORK", "nn");
-                Log.i("get", String.valueOf(todoAdapter.getTasks().size()));
-                tasks.clear();
-                Log.i("get", String.valueOf(todoAdapter.getTasks().size()));
-                todoAdapter.notifyDataSetChanged();
-
+                Bundle dataBundle   = data.getExtras();
+                newTitle            = dataBundle.getString("newTitle");
+                newDesc             = dataBundle.getString("newDesc");
+                returned = true;
             }
         } catch (Exception e) {
             Log.i("ERROR", String.valueOf(requestCode));

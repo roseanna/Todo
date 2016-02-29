@@ -44,7 +44,6 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         myBundle.putString("newTitle", String.valueOf(title.getText()));
         myBundle.putString("newDesc", String.valueOf(desc.getText()));
-        myBundle.putString("oldTitle", oldTitle);
         myIntent.putExtras(myBundle);
         setResult(Activity.RESULT_OK, myIntent);
         finish();

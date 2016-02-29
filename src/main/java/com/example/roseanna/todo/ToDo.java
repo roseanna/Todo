@@ -2,6 +2,7 @@ package com.example.roseanna.todo;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class ToDo implements Serializable {
         this.title = title;
     }
     public void setDescription(String description){
+        Log.i("set", description);
         this.description = description;
     }
     public void set() {
