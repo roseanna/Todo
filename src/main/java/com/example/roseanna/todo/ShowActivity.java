@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class ShowActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button back;
-    TextView title, desc;
+    TextView title, desc, date;
     Intent myIntent;
     Bundle myBundle;
     @Override
@@ -29,16 +29,20 @@ public class ShowActivity extends AppCompatActivity implements View.OnClickListe
         title   = (TextView) findViewById(R.id.title);
         desc    = (TextView) findViewById(R.id.showTextView);
         back    = (Button) findViewById(R.id.back);
+        date    = (TextView) findViewById(R.id.date);
 
         myIntent = getIntent();
         myBundle = myIntent.getExtras();
         String x = myBundle.getString("title");
         String y = myBundle.getString("description");
+        String d = myBundle.getString("date");
         if (y.equals(" ") || y.length() < 1)
             y = "No desc";
         Log.i(x, y);
         title.setText(x);
         desc.setText(y);
+        date.setText(d);
+        Log.i("date", d);
 
         back.setOnClickListener(this);
 

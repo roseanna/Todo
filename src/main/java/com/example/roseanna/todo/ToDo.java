@@ -34,8 +34,11 @@ public class ToDo implements Serializable {
         this.title = title;
     }
     public void setDescription(String description){
-        Log.i("set", description);
         this.description = description;
+    }
+    public String getDate(){
+        Log.i("getdate",date.toString());
+        return date.toString();
     }
     public void set() {
         this.selected = true;

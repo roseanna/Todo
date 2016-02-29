@@ -117,6 +117,7 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
 
         Intent showActivity = new Intent(MainActivity.this, ShowActivity.class);
         Bundle myBundle     = new Bundle();
+        myBundle.putString("date", chosen.getDate());
         myBundle.putString("title", chosen.getTitle());
         myBundle.putString("description", chosen.getDescription());
 
@@ -128,7 +129,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
         todoAdapter.notifyDataSetChanged();
     }
     public void deleteClick() {
-        Log.i("DELETE TASK", tasks.toString());
         ArrayList<ToDo> rem = new ArrayList<ToDo>();
         for (ToDo t : tasks) {
             if (t.isSelected())
@@ -142,7 +142,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
         todoAdapter.notifyDataSetChanged();
     }
     public void addClick() {
-        Log.i("ADD TASK", tasks.toString());
         String input = newTask.getText().toString();
         if (!input.isEmpty()) {
             tasks.add(new ToDo(input, " "));
