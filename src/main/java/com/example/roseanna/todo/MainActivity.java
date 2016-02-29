@@ -3,7 +3,6 @@ package com.example.roseanna.todo;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,13 +21,14 @@ import java.util.ArrayList;
 public class MainActivity extends Activity implements View.OnClickListener, Serializable {
     public TaskAdapter todoAdapter;
     public ListView todoLV;
-
-    public ArrayList<ToDo> tasks = new ArrayList<>();
-
-    public Button addButton, delButton, clearButton, showButton, editButton;
-
     public EditText newTask;
     public String filename;
+
+
+    public Button addButton, delButton, clearButton, showButton, editButton;
+    public ArrayList<ToDo> tasks = new ArrayList<>();
+
+    // For the edit
     public boolean returned = false;
     public String newTitle;
     public int oldPosition;
@@ -39,13 +39,13 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        todoLV = (ListView) findViewById(R.id.todoLV);
-        newTask = (EditText) findViewById(R.id.newTaskField);
+        todoLV      = (ListView) findViewById(R.id.todoLV);
+        newTask     = (EditText) findViewById(R.id.newTaskField);
 
-        addButton = (Button) findViewById(R.id.addButton);
-        delButton = (Button) findViewById(R.id.deleteButton);
-        editButton = (Button) findViewById(R.id.editButton);
-        showButton = (Button) findViewById(R.id.showButton);
+        addButton   = (Button) findViewById(R.id.addButton);
+        delButton   = (Button) findViewById(R.id.deleteButton);
+        editButton  = (Button) findViewById(R.id.editButton);
+        showButton  = (Button) findViewById(R.id.showButton);
         clearButton = (Button) findViewById(R.id.clearButton);
 
         filename = "Tasks";
@@ -75,23 +75,21 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
     }
 
     public void editClick(){
-        oldPosition = 0;
-        ArrayList<ToDo> clicked = new ArrayList<ToDo>();
+        int count = 0;
         for (int i = 0; i < tasks.size(); i++){
             if(tasks.get(i).isSelected()){
                 oldPosition = i;
-                Log.i("OLD POS", String.valueOf(oldPosition));
-                clicked.add(tasks.get(i));
+                count++;
             }
         }
-        if (clicked.size() != 1) {
-            Toast.makeText(MainActivity.this, "CHOOSE EXACTLY ONE TASK!", Toast.LENGTH_SHORT).show();
-            oldPosition = 0;
+        if (count != 1) {
+            Toast.makeText(MainActivity.this, "CHOOSE ONE TASK!", Toast.LENGTH_SHORT).show();
             return;
         }
-        ToDo toEdit = clicked.get(0);
+        ToDo toEdit         = tasks.get(oldPosition);
         Intent showActivity = new Intent(MainActivity.this, EditActivity.class);
         Bundle myBundle     = new Bundle();
+
         myBundle.putString("title", toEdit.getTitle());
         myBundle.putString("description", toEdit.getDescription());
 
@@ -104,22 +102,23 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
         }
     }
     public void showClick() {
-        ArrayList<ToDo> clicked = new ArrayList<ToDo>();
+        int count = 0;
+        ToDo chosen = tasks.get(0);
         for(ToDo t : tasks){
-            if(t.isSelected()){
-                clicked.add(t);
+            if(t.isSelected()) {
+                chosen = t;
+                count++;
             }
         }
-        if (clicked.size() != 1) {
-            Toast.makeText(MainActivity.this, "CHOOSE EXACTLY ONE TASK!", Toast.LENGTH_SHORT).show();
+        if (count != 1) {
+            Toast.makeText(MainActivity.this, "CHOOSE ONE TASK!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        ToDo t              = clicked.get(0);
         Intent showActivity = new Intent(MainActivity.this, ShowActivity.class);
         Bundle myBundle     = new Bundle();
-        myBundle.putString("title", t.getTitle());
-        myBundle.putString("description", t.getDescription());
+        myBundle.putString("title", chosen.getTitle());
+        myBundle.putString("description", chosen.getDescription());
 
         showActivity.putExtras(myBundle);
         startActivityForResult(showActivity, 100);
@@ -207,9 +206,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Seri
     public void onResume(){
         super.onResume();
         if (returned){
-            returned = false;
-            Log.i("onREsume", String.valueOf(oldPosition));
-            ToDo temp = tasks.get(oldPosition);
+            returned    = false;
+            ToDo temp   = tasks.get(oldPosition);
+
             temp.setDescription(newDesc);
             temp.setTitle(newTitle);
             todoAdapter.notifyDataSetChanged();
